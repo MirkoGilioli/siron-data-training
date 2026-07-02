@@ -1,0 +1,3 @@
+trans_id,trans_agg_01_tp,trans_agg_02_tp,eur_trans_am,trans_dt,trans_status_de,paym_sett_tp,transaction_tp,debtor_cntp_id,debtor_deal_id,debtor_deal_branch_cd,debtor_deal_reg_tp,creditor_cntp_id,creditor_deal_id,creditor_deal_branch_cd,creditor_deal_reg_tp,transaction_country_nm
+CS2428_OUT,JKH,CASH ATM,302.04,2025-01-22,PAID,NULL,WITHDRAWAL,0000000000002428,6861032001,0M003,593,99999999,999999,99999,99999,CZ
+CS4492_INC,JKH,CASH ATM,300.56,2025-01-22,PAID,NULL,DEPOSIT,99999999,999999,99999,99999,0000000000004492,2106578539,0HEOF,592,CZ

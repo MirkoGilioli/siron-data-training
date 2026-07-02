@@ -1,0 +1,9 @@
+country_iso2_cd,country_iso_cd,country_iso3_cd,country_de,country_risk_cd,country_risk_de,country_offshore_in,terrorist_country_in,high_risk_eu_third_country_in,sanctioned_country_in,sanctioned_country_de,sanctioned_country_detail,country_risk
+QZ,0,NA,Stateless,H,High,false,false,false,false,NA,Not applicable,HRG
+XX,0,NA,Stateless,H,High,false,false,false,false,NA,Not applicable,HRG
+SB,90,SLB,Solomon Islands,H,High,false,false,false,false,NA,Not applicable,HRG
+BI,108,BDI,Burundi,H,High,false,false,false,false,NA,Not applicable,HRG
+BY,112,BLR,Belarus,H,High,false,false,false,true,TE,Total embargo,HRG
+CZ,203,CZE,Czech Republic,L,Low,false,false,false,false,NA,Not applicable,LRG
+PL,616,POL,Poland,M,Medium,false,false,false,false,NA,Not applicable,MRG
+UA,804,UKR,Ukraine,VH,Very High,false,false,false,false,NA,Not applicable,VHRG

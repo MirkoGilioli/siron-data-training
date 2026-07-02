@@ -1,0 +1,2 @@
+trans_id,trans_agg_01_tp,trans_agg_02_tp,eur_trans_am,trans_dt,trans_status_de,paym_sett_tp,debtor_cntp_id,debtor_country_cd,debtor_deal_id,debtor_deal_branch_cd,debtor_deal_reg_tp,creditor_cntp_id,creditor_country_cd,creditor_deal_id,creditor_deal_branch_cd,creditor_deal_reg_tp,deal_id
+SD2428_OUT,JGF,DOMESTIC BANK TRANSFER,6795.39,2025-03-28,PAID,BAZ pay OTH,0000000000002428,CZ,6861032001,0M003,593,99999999,CZ,999999,99999,99999,6861032001
