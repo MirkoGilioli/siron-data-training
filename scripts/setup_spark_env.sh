@@ -67,7 +67,7 @@ fi
 
 # Set active project and quota project
 echo -e "Setting active gcloud project to '${GREEN}$PROJECT_ID${NC}'..."
-gcloud config set project "$PROJECT_ID" --quiet
+gcloud config set project "$PROJECT_ID" --quiet &>/dev/null || true
 gcloud auth application-default set-quota-project "$PROJECT_ID" --quiet &>/dev/null || true
 
 # 2. GET REGION AND CONNECTION ID
@@ -170,7 +170,15 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --condition=None \
     --no-user-output-enabled
 
-# 7.3 Storage Object Admin on the new staging bucket
+# 7.3 Storage Object Admin
+echo -e "Granting ${BLUE}roles/storage.objectAdmin${NC} (Project Level)..."
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:$SA_EMAIL" \
+    --role="roles/storage.objectAdmin" \
+    --condition=None \
+    --no-user-output-enabled
+
+# 7.4 Storage Object Admin on the new staging bucket (Optional but kept for completeness)
 echo -e "Granting ${BLUE}roles/storage.objectAdmin${NC} on GCS staging bucket..."
 gcloud storage buckets add-iam-policy-binding "gs://$STAGING_BUCKET" \
     --member="serviceAccount:$SA_EMAIL" \
