@@ -45,31 +45,39 @@ fi
 
 # 2. GET REGION AND CONNECTION ID
 CONNECTION_ID="spark-connection"
-REGION="US"
-read -rp "Enter GCP Region/Location for Connection [Default: $REGION]: " USER_REGION
-REGION="${USER_REGION:-$REGION}"
+REGION="us-central1"
+if [ $# -ge 2 ]; then
+    REGION="$2"
+else
+    read -rp "Enter GCP Region/Location for Connection [Default: $REGION]: " USER_REGION
+    REGION="${USER_REGION:-$REGION}"
+fi
 
 echo -e "\n${YELLOW}=== Configuration ===${NC}"
 echo -e "GCP Project:   ${GREEN}$PROJECT_ID${NC}"
 echo -e "Location:      ${GREEN}$REGION${NC}"
 echo -e "Connection ID: ${GREEN}$CONNECTION_ID${NC}\n"
 
-read -rp "Proceed with environment setup? (y/N): " CONFIRM
-if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
-    echo -e "${YELLOW}Setup cancelled by user.${NC}"
-    exit 0
+if [ -t 0 ]; then
+    read -rp "Proceed with environment setup? (y/N): " CONFIRM
+    if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Setup cancelled by user.${NC}"
+        exit 0
+    fi
+else
+    echo -e "${YELLOW}Non-interactive shell detected. Proceeding automatically...${NC}"
 fi
 
 # 3. ENABLE REQUIRED GCP APIS
-echo -e "\n${YELLOW}[1/4] Enabling required APIs (BigQuery Connection & Dataproc)...${NC}"
+echo -e "\n${YELLOW}[1/5] Enabling required APIs (BigQuery Connection & Dataproc)...${NC}"
 gcloud services enable bigqueryconnection.googleapis.com dataproc.googleapis.com --project="$PROJECT_ID"
 echo -e "${GREEN}✓ Required APIs successfully enabled.${NC}"
 
 # 4. CREATE SPARK CONNECTION
-echo -e "\n${YELLOW}[2/4] Creating BigQuery Spark Connection...${NC}"
+echo -e "\n${YELLOW}[2/5] Creating BigQuery Spark Connection...${NC}"
 
 # Check if connection already exists
-if bq show --connection --project_id="$PROJECT_ID" --location="$REGION" "$CONNECTION_ID" &>/dev/null; then
+if bq --project_id="$PROJECT_ID" show --connection --location="$REGION" "$CONNECTION_ID" &>/dev/null; then
     echo -e "Spark Connection '${GREEN}$CONNECTION_ID${NC}' already exists. Skipping creation."
 else
     bq --project_id="$PROJECT_ID" --location="$REGION" mk \
@@ -83,7 +91,7 @@ fi
 echo -e "\n${YELLOW}[3/5] Retrieving Connection Service Account...${NC}"
 
 # Safely query connection JSON and parse with python3 (portable and robust)
-CONNECTION_JSON=$(bq show --connection --project_id="$PROJECT_ID" --location="$REGION" --format=json "$CONNECTION_ID")
+CONNECTION_JSON=$(bq --project_id="$PROJECT_ID" show --connection --location="$REGION" --format=json "$CONNECTION_ID")
 
 SA_EMAIL=$(python3 -c "
 import sys, json
@@ -125,7 +133,7 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --member="serviceAccount:$SA_EMAIL" \
     --role="roles/dataproc.worker" \
     --condition=None \
-    --no-user-output-enabled &>/dev/null
+    --no-user-output-enabled
 
 # 7.2 BigQuery Admin
 echo -e "Granting ${BLUE}roles/bigquery.admin${NC} (BigQuery Reading and Writing)..."
@@ -133,14 +141,14 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --member="serviceAccount:$SA_EMAIL" \
     --role="roles/bigquery.admin" \
     --condition=None \
-    --no-user-output-enabled &>/dev/null
+    --no-user-output-enabled
 
 # 7.3 Storage Object Admin on the new staging bucket
 echo -e "Granting ${BLUE}roles/storage.objectAdmin${NC} on GCS staging bucket..."
 gcloud storage buckets add-iam-policy-binding "gs://$STAGING_BUCKET" \
     --member="serviceAccount:$SA_EMAIL" \
     --role="roles/storage.objectAdmin" \
-    --no-user-output-enabled &>/dev/null
+    --no-user-output-enabled
 
 echo -e "${GREEN}✓ All IAM roles successfully granted to the connection service account.${NC}"
 
