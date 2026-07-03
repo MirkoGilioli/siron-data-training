@@ -43,6 +43,33 @@ if [ -z "$PROJECT_ID" ]; then
     exit 1
 fi
 
+# 1.2 VERIFY AND CONFIGURE GCLOUD AUTHENTICATION
+echo -e "\n${YELLOW}Checking gcloud authentication and active account...${NC}"
+if ! gcloud config get-value account &>/dev/null || ! gcloud projects list --limit=1 &>/dev/null; then
+    echo -e "${RED}Warning: No active or valid gcloud account detected, or your session has expired.${NC}"
+    if [ -t 0 ]; then
+        read -rp "Would you like to run 'gcloud auth login' and 'gcloud auth application-default login' now? (y/N): " RUN_LOGIN
+        if [[ "$RUN_LOGIN" =~ ^[Yy]$ ]]; then
+            gcloud auth login
+            gcloud auth application-default login
+        else
+            echo -e "${RED}Error: Valid gcloud authentication is required to proceed.${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${RED}Error: Non-interactive shell detected and no valid gcloud authentication found.${NC}"
+        echo -e "Please run the following commands in your local terminal before running this script:"
+        echo -e "  gcloud auth login"
+        echo -e "  gcloud auth application-default login"
+        exit 1
+    fi
+fi
+
+# Set active project and quota project
+echo -e "Setting active gcloud project to '${GREEN}$PROJECT_ID${NC}'..."
+gcloud config set project "$PROJECT_ID" --quiet
+gcloud auth application-default set-quota-project "$PROJECT_ID" --quiet &>/dev/null || true
+
 # 2. GET REGION AND CONNECTION ID
 CONNECTION_ID="spark-connection"
 REGION="us-central1"
