@@ -45,7 +45,7 @@ fi
 
 # 1.2 VERIFY AND CONFIGURE GCLOUD AUTHENTICATION
 echo -e "\n${YELLOW}Checking gcloud authentication and active account...${NC}"
-if ! gcloud config get-value account &>/dev/null || ! gcloud projects list --limit=1 &>/dev/null; then
+if ! gcloud config get-value account &>/dev/null || ! gcloud auth print-access-token &>/dev/null; then
     echo -e "${RED}Warning: No active or valid gcloud account detected, or your session has expired.${NC}"
     if [ -t 0 ]; then
         read -rp "Would you like to run 'gcloud auth login' and 'gcloud auth application-default login' now? (y/N): " RUN_LOGIN
