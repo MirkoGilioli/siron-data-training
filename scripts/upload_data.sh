@@ -50,7 +50,7 @@ DATASET_NAME="compliance_training"
 read -rp "Enter Target BigQuery Dataset Name [Default: $DATASET_NAME]: " USER_DATASET
 DATASET_NAME="${USER_DATASET:-$DATASET_NAME}"
 
-REGION="europe-west8"
+REGION="us-central1"
 read -rp "Enter GCP Region for the Dataset [Default: $REGION]: " USER_REGION
 REGION="${USER_REGION:-$REGION}"
 
