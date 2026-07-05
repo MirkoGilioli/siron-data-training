@@ -815,6 +815,14 @@ print(f"Rows: {trx_final.count()}, Columns: {len(trx_final.columns)}")
 trx_final.show(5, truncate= False)
 
 # Align decimal column precisions and scales with the destination BigQuery table to prevent write schema mismatch errors
+#
+# NOTE FOR TRAINEES:
+# When running this cell/script for the first time, you will see a warning:
+#   "⚠ Target table schema alignment skipped or failed (table may not exist yet): ..."
+# This is completely normal and can be safely ignored. It occurs because the target
+# table doesn't exist yet in BigQuery on your first run. The code safely catches this,
+# skips the alignment, and then successfully creates and writes the table below.
+# If you execute this a second time, the warning will disappear.
 from pyspark.sql.types import DecimalType
 
 try:

@@ -137,10 +137,8 @@ Once connected, step through the cells sequentially and observe the compliance d
 
 1. **Chapter 1 (Spark Session):** Run the cell to establish a clean Spark Connect session.
 2. **Chapter 2 (Configurations):** 
-   > [!WARNING]
-   > Update the variables inside this code block before executing it:
-   > *   Change `gcp_project` to match your active **GCP Project ID**.
-   > *   Ensure `temporaryGcsBucket` points to the staging bucket created in Task 3: `'compliance-training-staging-[YOUR_PROJECT_ID]'`.
+   > [!TIP]
+   > This cell contains a **self-healing auto-detection block** that programmatically discovers your active Qwiklabs GCP Project ID and constructs your GCS staging bucket name at runtime using standard `google.auth` libraries. You do NOT need to manually edit the variables! Simply execute the cell and verify that it prints your correct active Project ID and bucket name.
 3. **Chapter 3 (Unifying Channels):** Run the cells. Watch how standard Bank Transfers (BT), Direct Debits (SDD), Cards, and Cash are split into credit/debit rows, unioned, and consolidated.
 4. **Chapter 4 & 5 (Feature Engineering & Products):** Step through the aggregations. You will see transactions left-joined with Country Risk tables and joined with Product dossiers, generating flattened customer profiles.
 5. **Chapter 6 (Schema Safeguard & Save):** Run the final cell. This block programmatically loads the target table metadata schema, down-casts Spark decimals to match BigQuery scale definitions, and saves the final consolidated compliance ledger (`CZ_segm_trx_final_01`) successfully with zero write mismatch errors!
