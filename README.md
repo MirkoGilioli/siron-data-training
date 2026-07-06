@@ -34,7 +34,7 @@ graph TD
     classDef final fill:#E8F8F5,stroke:#27AE60,stroke-width:2px;
 
     %% Source Nodes
-    subgraph Raw Source Tables (BigQuery)
+    subgraph raw_sources ["Raw Source Tables (BigQuery)"]
         BT["bank_transfer_after_gap"]:::source
         SDD["sdd_after_gap"]:::source
         CARD["card_after_gap"]:::source
@@ -45,7 +45,7 @@ graph TD
     end
 
     %% Process Nodes - Splitting & Direction
-    subgraph Channel Processing
+    subgraph channel_processing ["Channel Processing"]
         BT_P["Process BT<br/>Split to inc/out via paym_sett_tp"]:::process
         SDD_P["Process SDD<br/>Split to inc/out via paym_sett_tp"]:::process
         CARD_P["Process CARD<br/>Split to inc/out via paym_sett_tp"]:::process
@@ -62,8 +62,8 @@ graph TD
     BT_P & SDD_P & CARD_P & CASH_P --> TRX_U
 
     %% Enrichment & Product Mapping
-    subgraph Feature Engineering Branches
-        subgraph Risk & Temporal Aggregations
+    subgraph feature_engineering ["Feature Engineering Branches"]
+        subgraph risk_temporal ["Risk & Temporal Aggregations"]
             ENR["Enrich Risk<br/>Join Country Risk (HRG vs LRG)"]:::process
             AGG_RT["Risk & Type Agg<br/>Group by Type & Geography"]:::process
             AGG_T["Temporal Agg<br/>Yearly, Monthly & Weekly metrics"]:::process
@@ -73,7 +73,7 @@ graph TD
             AGG_RT --> PIV_RT
         end
 
-        subgraph Product Classification
+        subgraph product_classification ["Product Classification"]
             PROD_M["Product Mapping<br/>Classify codes into 9 categories"]:::process
             ENR_PROD["Enrich Products<br/>Left join transactions with product registry"]:::process
             AGG_PROD["Product Agg<br/>Calculate amount & mix % per customer"]:::process
@@ -91,7 +91,7 @@ graph TD
     CR --> ENR
 
     %% Final Stage
-    subgraph Synthesis
+    subgraph synthesis ["Synthesis"]
         JOIN_M["Master Synthesis Join<br/>Outer join Aggregates by cntp_id"]:::process
         FILT_P["Filter Perimeter<br/>Inner join with CZ_segm_perimeter"]:::process
         ALIGN_S["Schema-Safe Align<br/>Cast decimal scale dynamically"]:::process
